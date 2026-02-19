@@ -1,16 +1,27 @@
-# shift_tracker
+# SHIFT TRACKER
 
-A new Flutter project.
+Shift Tracker is a Flutter app designed to help employees and managers easily log, track, and analyze work shifts. It was inspired by my Work and Travel experience and built with a problem-solver mindset to make daily shift management smoother and more organized.
 
-## Getting Started
+Features
 
-This project is a starting point for a Flutter application.
+For Workers:
+- View current and past shifts
+- Record start/end times and hours worked
+- Track cups sold and total sales
+- Log notes and checklist items
+- Manage freezer storage
 
-A few resources to get you started if this is your first Flutter project:
+For Managers:
+- Access all employee shifts
+- Review analytics and reports 
+- Monitor total sales and cup usage
+- Manage inventory and restocking needs
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Technologies
+- Flutter: For cross-platform mobile development
+- Dart: Programming language used in Flutter
+- Provider: For state management
+- Flutter Dotenv: To manage API keys and secrets
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Notes
+- This project is currently in development.
