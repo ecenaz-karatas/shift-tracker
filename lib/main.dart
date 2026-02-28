@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'app_state.dart';
-import 'package:shift_tracker/worker/pages/main_page.dart';
-import 'manager/manager_main_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'auth/login_page.dart';
+import 'auth/initial_setup_page.dart';
+import 'auth/home_router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-// TEMPORARY: Toggle this to switch between worker and manager view
-// true = Manager view, false = Worker view
-// After we add authentication, this will be automatic based on user role
-const bool IS_MANAGER = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +16,55 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppState(),
-      child: MaterialApp(
-        home: IS_MANAGER ? ManagerMainPage() : MainPage(),
-        debugShowCheckedModeBanner: false,
-      ),
+      child: MyApp(),
     ),
   );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Shift Tracker',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      debugShowCheckedModeBanner: false,
+      home: AuthWrapper(),
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/setup': (context) => InitialSetupPage(),
+        '/home': (context) => HomeRouter(),
+      },
+    );
+  }
+}
+
+// AuthWrapper handles the initial auth state
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // Still loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        // User is logged in
+        if (snapshot.hasData) {
+          return HomeRouter();
+        }
+
+        // User is NOT logged in - show login page
+        return LoginPage();
+      },
+    );
+  }
 }
