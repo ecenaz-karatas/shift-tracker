@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shift_tracker/auth//auth_service.dart';
+import 'package:shift_tracker/auth/auth_service.dart';
+import 'package:shift_tracker/auth/initial_setup_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -20,17 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _checkFirstUser();
-  }
-
-  // If this is the first user, show setup screen
-  void _checkFirstUser() async {
-    final isFirst = await _authService.isFirstUser();
-    if (isFirst && mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => InitialSetupPage()),
-      );
-    }
   }
 
   // Sign in with email and password
@@ -269,23 +259,16 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Google sign in button
                 SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
+                  child: TextButton(
                     onPressed: _isLoading ? null : _signInWithGoogle,
-                    icon: Image.asset(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Image.asset(
                       'assets/google_logo.png',
-                      height: 24,
-                    ),
-                    label: Text(
-                      "Sign in with Google",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: Colors.white),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                      height: 50,
                     ),
                   ),
                 ),

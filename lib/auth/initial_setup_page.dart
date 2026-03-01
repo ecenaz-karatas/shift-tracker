@@ -66,7 +66,11 @@ class _InitialSetupPageState extends State<InitialSetupPage> {
       await _authService.updateLastLogin();
 
       if (mounted) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        // Force a rebuild by going back to root
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home',
+              (route) => false,
+        );
       }
     } catch (e) {
       setState(() {
