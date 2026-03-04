@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shift_tracker/auth//auth_service.dart';
-import '../../config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class InitialSetupPage extends StatefulWidget {
   @override
@@ -19,9 +19,29 @@ class _InitialSetupPageState extends State<InitialSetupPage> {
   String? _errorMessage;
   bool _passwordVisible = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Listen to text changes to rebuild button state
+    _setupPasswordController.addListener(() => setState(() {}));
+    _emailController.addListener(() => setState(() {}));
+    _passwordController.addListener(() => setState(() {}));
+    _confirmPasswordController.addListener(() => setState(() {}));
+  }
+
+  // Check if all fields are filled
+  bool get _allFieldsFilled =>
+      _setupPasswordController.text.isNotEmpty &&
+          _emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty &&
+          _confirmPasswordController.text.isNotEmpty;
+
   Future<void> _completeSetup() async {
+
+    final String setupPassword = dotenv.env['SETUP_PASSWORD'] ?? '';
+
     // Validate setup password
-    if (_setupPasswordController.text != setupPassword) {
+    if (_setupPasswordController.text.trim() != setupPassword) {
       setState(() => _errorMessage = "Incorrect setup password");
       return;
     }
@@ -127,6 +147,10 @@ class _InitialSetupPageState extends State<InitialSetupPage> {
                   decoration: InputDecoration(
                     hintText: "Setup Password",
                     helperText: "You should have received this from the developer",
+                    helperStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
                     prefixIcon: Icon(Icons.vpn_key),
                     filled: true,
                     fillColor: Colors.white,
@@ -221,9 +245,16 @@ class _InitialSetupPageState extends State<InitialSetupPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _completeSetup,
+                    onPressed: (_allFieldsFilled && !_isLoading)
+                        ? _completeSetup
+                        : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple[700],
+                      backgroundColor: _allFieldsFilled
+                          ? Colors.deepPurple[700]  // Enabled: Dark purple
+                          : Colors.grey[400],
+                      foregroundColor: Colors.white,
+                      disabledBackgroundColor: Colors.grey[400],
+                      disabledForegroundColor: Colors.white70,
                       padding: EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
